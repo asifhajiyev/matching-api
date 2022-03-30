@@ -12,7 +12,9 @@ import (
 
 func main() {
 
-	matchClient := client.NewDriverClient(resty.New())
+	resty := resty.New()
+	resty.SetBaseURL("http://localhost:8080/api/")
+	matchClient := client.NewDriverClient(resty)
 	matchService := service.NewMatchingService(matchClient)
 	matchHandler := handler.NewMatchingHandler(matchService)
 

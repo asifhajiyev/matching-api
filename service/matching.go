@@ -1,15 +1,15 @@
 package service
 
 import (
-	"fmt"
 	"github.com/asifhajiyev/matching-api/client"
 	"github.com/asifhajiyev/matching-api/error"
-	"github.com/asifhajiyev/matching-api/model"
+	"github.com/asifhajiyev/matching-api/model/request"
+	"github.com/asifhajiyev/matching-api/model/response"
 	"github.com/asifhajiyev/matching-api/util"
 )
 
 type MatchingService interface {
-	Match(longitude, latitude string) *error.Error
+	Match(longitude, latitude string) (*response.SearchDriverResponse, *error.Error)
 }
 
 type matchingService struct {
@@ -20,20 +20,28 @@ func NewMatchingService(client client.DriverSearcher) MatchingService {
 	return matchingService{Client: client}
 }
 
-func (ms matchingService) Match(longitude, latitude string) *error.Error {
-	lng := util.StringToFloat(longitude)
-	lt := util.StringToFloat(latitude)
+func (ms matchingService) Match(longitude, latitude string) (*response.SearchDriverResponse, *error.Error) {
 	radius := radiusToSearchDriver
-
-	searchDriver := model.SearchDriver{
-		Longitude: lng,
-		Latitude:  lt,
-		Radius:    radius,
+	searchDriver, err := request.NewSearchDriverRequest(longitude, latitude, radius)
+	if err != nil {
+		return nil, err
 	}
-	response, err := ms.Client.Search(searchDriver)
+	r, err := ms.Client.Search(*searchDriver)
 
-	fmt.Println("in service response", response)
-	fmt.Println("in service err", err)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil
+	if r.Data == nil {
+		return nil, &error.Error{
+			Code:    r.Code,
+			Message: r.Message,
+		}
+	}
+
+	ri := response.RideInfo{}
+	util.InterfaceToStruct(r.Data, &ri)
+	dlr := response.SearchDriverResponse{RideInfo: ri}
+
+	return &dlr, nil
 }

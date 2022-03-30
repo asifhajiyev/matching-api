@@ -1,6 +1,14 @@
 package error
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+)
+
+const InvalidCoordinates = "longitude and latitude should be in the right range " +
+	"(-180<=longitude<=180 and -90<=latitude<=90)"
+
+const UnprocessableCoordinates = "longitude and latitude should be number and not empty"
 
 type Error struct {
 	Code    int    `json:"code"`
@@ -42,5 +50,12 @@ func ValidationError(msg string) *Error {
 	return &Error{
 		Code:    http.StatusBadRequest,
 		Message: msg,
+	}
+}
+
+func ParsingError(msg string) *Error {
+	return &Error{
+		Code:    http.StatusUnprocessableEntity,
+		Message: strings.TrimSpace(msg),
 	}
 }

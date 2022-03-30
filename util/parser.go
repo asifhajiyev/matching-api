@@ -1,14 +1,38 @@
 package util
 
 import (
-	log "github.com/sirupsen/logrus"
+	"encoding/json"
+	err "github.com/asifhajiyev/matching-api/error"
 	"strconv"
+	"strings"
 )
 
-func StringToFloat(s string) float64 {
-	f, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		log.Errorf("'%s' could not be parsed", s)
+func StringToFloat(s string) (float64, *err.Error) {
+	if strings.TrimSpace(s) == "" {
+		return 0.0, err.ParsingError("argument should not be empty")
 	}
-	return f
+	f, e := strconv.ParseFloat(s, 64)
+	if e != nil {
+		return 0.0, err.ParsingError("argument should be float number")
+	}
+	return f, nil
+}
+
+func InterfaceToStruct(from interface{}, to interface{}) *err.Error {
+	js, _ := json.Marshal(from)
+	e := json.Unmarshal(js, to)
+
+	if e != nil {
+		return err.ServerError(e.Error())
+	}
+	return nil
+}
+
+func JsonToStruct(from []byte, to interface{}) *err.Error {
+	e := json.Unmarshal(from, to)
+
+	if e != nil {
+		return err.ServerError(e.Error())
+	}
+	return nil
 }
