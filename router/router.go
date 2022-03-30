@@ -8,11 +8,15 @@ import (
 
 type HandlerList struct {
 	Mh handler.MatchingHandler
+	Ah handler.AuthHandler
 }
 
 func (h *HandlerList) SetupRoutes(app *fiber.App) {
 	app.Use(logger.New())
 
-	dl := app.Group("api").Group("match")
-	h.SetupMatchingRoute(dl)
+	mh := app.Group("api").Group("match")
+	h.SetupMatchingRoute(mh)
+
+	ah := app.Group("api").Group("auth")
+	h.SetupAuthRoute(ah)
 }

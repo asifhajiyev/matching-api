@@ -19,7 +19,7 @@ func main() {
 	matchHandler := handler.NewMatchingHandler(matchService)
 
 	app := fiber.New()
-	r := router.HandlerList{Mh: matchHandler}
+	r := router.HandlerList{Mh: matchHandler, Ah: handler.NewAuthHandler(service.JwtAuthService{})}
 	r.SetupRoutes(app)
 
 	log.Fatal(app.Listen(":8090"))
