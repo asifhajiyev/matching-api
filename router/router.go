@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/asifhajiyev/matching-api/handler"
+	"github.com/asifhajiyev/matching-api/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
@@ -14,9 +15,11 @@ type HandlerList struct {
 func (h *HandlerList) SetupRoutes(app *fiber.App) {
 	app.Use(logger.New())
 
-	mh := app.Group("api").Group("match")
+	appBaseGroup := app.Group("api")
+
+	mh := appBaseGroup.Group("match").Use(middleware.JWTProtected())
 	h.SetupMatchingRoute(mh)
 
-	ah := app.Group("api").Group("auth")
+	ah := appBaseGroup.Group("auth")
 	h.SetupAuthRoute(ah)
 }
