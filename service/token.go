@@ -18,7 +18,7 @@ var SecretKey = os.Getenv("SECRET_KEY")
 
 func (jas JwtAuthService) GetToken() (*middleware.AuthToken, *err.Error) {
 	claims := middleware.CustomClaims{
-		Authenticated: false,
+		Authenticated: true,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer: os.Getenv("APP_NAME"),
 		},
