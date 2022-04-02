@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/asifhajiyev/matching-api/client"
+	"github.com/asifhajiyev/matching-api/clients"
 	"github.com/asifhajiyev/matching-api/handler"
 	"github.com/asifhajiyev/matching-api/router"
 	"github.com/asifhajiyev/matching-api/service"
@@ -12,9 +12,11 @@ import (
 
 func main() {
 
+	InitEnvVariables()
+
 	resty := resty.New()
 	resty.SetBaseURL("http://localhost:8080/api/")
-	matchClient := client.NewDriverClient(resty)
+	matchClient := clients.NewDriverClient(resty)
 	matchService := service.NewMatchingService(matchClient)
 	matchHandler := handler.NewMatchingHandler(matchService)
 

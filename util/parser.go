@@ -13,9 +13,17 @@ func StringToFloat(s string) (float64, *err.Error) {
 	}
 	f, e := strconv.ParseFloat(s, 64)
 	if e != nil {
-		return 0.0, err.ParsingError("argument should be float number")
+		return 0.0, err.ParsingError("argument could not be parsed to float number")
 	}
 	return f, nil
+}
+
+func StringToInt(s string) (int, *err.Error) {
+	i, e := strconv.Atoi(s)
+	if e != nil {
+		return 0, err.ParsingError("argument could not be parsed to int number")
+	}
+	return i, nil
 }
 
 func InterfaceToStruct(from interface{}, to interface{}) *err.Error {

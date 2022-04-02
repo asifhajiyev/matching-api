@@ -11,8 +11,6 @@ import (
 	"strings"
 )
 
-var SecretKey = os.Getenv("SECRET_KEY")
-
 type CustomClaims struct {
 	Authenticated bool `json:"authenticated"`
 	jwt.RegisteredClaims
@@ -24,7 +22,7 @@ type AuthToken struct {
 
 func JWTProtected() func(*fiber.Ctx) error {
 	config := jwtMiddleware.Config{
-		SigningKey:     []byte(SecretKey),
+		SigningKey:     []byte(os.Getenv("SECRET_KEY")),
 		ErrorHandler:   jwtError,
 		SuccessHandler: jwtSuccess,
 	}
@@ -80,7 +78,7 @@ func verifyToken(c *fiber.Ctx) error {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, errors.New("unexpected signing method")
 			}
-			return []byte(SecretKey), nil
+			return []byte(os.Getenv("SECRET_KEY")), nil
 		},
 	)
 	if err != nil {

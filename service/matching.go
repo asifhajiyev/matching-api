@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/asifhajiyev/matching-api/client"
+	"github.com/asifhajiyev/matching-api/clients"
 	"github.com/asifhajiyev/matching-api/error"
 	"github.com/asifhajiyev/matching-api/model/request"
 	"github.com/asifhajiyev/matching-api/model/response"
@@ -13,10 +13,10 @@ type MatchingService interface {
 }
 
 type matchingService struct {
-	Client client.DriverSearcher
+	Client clients.DriverSearcher
 }
 
-func NewMatchingService(client client.DriverSearcher) MatchingService {
+func NewMatchingService(client clients.DriverSearcher) MatchingService {
 	return matchingService{Client: client}
 }
 

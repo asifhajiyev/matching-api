@@ -1,4 +1,4 @@
-package client
+package clients
 
 import (
 	err "github.com/asifhajiyev/matching-api/error"
@@ -21,7 +21,7 @@ func NewDriverClient(client *resty.Client) DriverSearcher {
 
 func (ds driverSearch) Search(sd request.SearchDriverRequest) (*response.RestResponse, *err.Error) {
 	rr := response.RestResponse{}
-	r, e := ds.Client.R().SetBody(sd).Post("driver-location/search")
+	r, e := ds.Client.R().SetBody(sd).Post("drivers/search")
 	if e != nil {
 		return nil, err.ServerError(e.Error())
 	}
