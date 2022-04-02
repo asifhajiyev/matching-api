@@ -1,3 +1,3 @@
-package service
+package services
 
 const radiusToSearchDriver = 9750000

@@ -1,8 +1,8 @@
-package handler
+package handlers
 
 import (
 	"github.com/asifhajiyev/matching-api/model/response"
-	"github.com/asifhajiyev/matching-api/service"
+	"github.com/asifhajiyev/matching-api/services"
 	"github.com/gofiber/fiber/v2"
 	"net/http"
 )
@@ -12,15 +12,14 @@ type AuthHandler interface {
 }
 
 type authHandler struct {
-	As service.AuthService
+	As services.AuthService
 }
 
-func NewAuthHandler(as service.AuthService) AuthHandler {
+func NewAuthHandler(as services.AuthService) AuthHandler {
 	return authHandler{As: as}
 }
 
 func (ah authHandler) GetToken(c *fiber.Ctx) error {
-
 	r, err := ah.As.GetToken()
 
 	if err != nil {

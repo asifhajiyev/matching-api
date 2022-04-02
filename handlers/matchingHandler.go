@@ -1,8 +1,8 @@
-package handler
+package handlers
 
 import (
 	"github.com/asifhajiyev/matching-api/model/response"
-	"github.com/asifhajiyev/matching-api/service"
+	"github.com/asifhajiyev/matching-api/services"
 	"github.com/gofiber/fiber/v2"
 	"net/http"
 )
@@ -12,10 +12,10 @@ type MatchingHandler interface {
 }
 
 type matchingHandler struct {
-	Ms service.MatchingService
+	Ms services.MatchingService
 }
 
-func NewMatchingHandler(ms service.MatchingService) MatchingHandler {
+func NewMatchingHandler(ms services.MatchingService) MatchingHandler {
 	return matchingHandler{Ms: ms}
 }
 

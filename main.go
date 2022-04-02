@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/asifhajiyev/matching-api/clients"
-	"github.com/asifhajiyev/matching-api/handler"
-	"github.com/asifhajiyev/matching-api/router"
-	"github.com/asifhajiyev/matching-api/service"
+	"github.com/asifhajiyev/matching-api/handlers"
+	"github.com/asifhajiyev/matching-api/routers"
+	"github.com/asifhajiyev/matching-api/services"
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
 	"log"
@@ -14,15 +14,21 @@ func main() {
 
 	InitEnvVariables()
 
-	resty := resty.New()
-	resty.SetBaseURL("http://localhost:8080/api/")
-	matchClient := clients.NewDriverClient(resty)
-	matchService := service.NewMatchingService(matchClient)
-	matchHandler := handler.NewMatchingHandler(matchService)
+	r := resty.New()
+	r.SetBaseURL("http://localhost:8080/api/")
+
+	matchClient := clients.NewDriverClient(r)
+	matchService := services.NewMatchingService(matchClient)
+	matchHandler := handlers.NewMatchingHandler(matchService)
+
+	authHandler := handlers.NewAuthHandler(services.JwtAuthService{})
 
 	app := fiber.New()
-	r := router.HandlerList{Mh: matchHandler, Ah: handler.NewAuthHandler(service.JwtAuthService{})}
-	r.SetupRoutes(app)
+	hl := routers.HandlerList{
+		Mh: matchHandler,
+		Ah: authHandler,
+	}
+	hl.SetupRoutes(app)
 
 	log.Fatal(app.Listen(":8090"))
 }

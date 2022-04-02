@@ -11,6 +11,7 @@ import (
 type DriverSearcher interface {
 	Search(sd request.SearchDriverRequest) (*response.RestResponse, *err.Error)
 }
+
 type driverSearch struct {
 	Client *resty.Client
 }
@@ -21,11 +22,12 @@ func NewDriverClient(client *resty.Client) DriverSearcher {
 
 func (ds driverSearch) Search(sd request.SearchDriverRequest) (*response.RestResponse, *err.Error) {
 	rr := response.RestResponse{}
-	r, e := ds.Client.R().SetBody(sd).Post("drivers/search")
+	resp, e := ds.Client.R().SetBody(sd).Post("drivers/search")
+
 	if e != nil {
 		return nil, err.ServerError(e.Error())
 	}
-	util.JsonToStruct(r.Body(), &rr)
+	util.JsonToStruct(resp.Body(), &rr)
 
 	return &rr, nil
 }

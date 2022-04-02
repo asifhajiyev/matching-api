@@ -1,7 +1,7 @@
-package service
+package services
 
 import (
-	error "github.com/asifhajiyev/matching-api/error"
+	"github.com/asifhajiyev/matching-api/error"
 	"github.com/asifhajiyev/matching-api/middleware"
 	"github.com/asifhajiyev/matching-api/util"
 	"github.com/golang-jwt/jwt/v4"
@@ -10,13 +10,17 @@ import (
 )
 
 type AuthService interface {
-	GetToken() (*middleware.AuthToken, *error.Error)
+	GetToken() (*AuthToken, *error.Error)
 }
 
 type JwtAuthService struct {
 }
 
-func (jas JwtAuthService) GetToken() (*middleware.AuthToken, *error.Error) {
+type AuthToken struct {
+	Token string `json:"token"`
+}
+
+func (jas JwtAuthService) GetToken() (*AuthToken, *error.Error) {
 	secretKey := os.Getenv("SECRET_KEY")
 	expireTime, err := util.StringToInt(os.Getenv("JWT_EXPIRE_TIME"))
 
@@ -37,5 +41,5 @@ func (jas JwtAuthService) GetToken() (*middleware.AuthToken, *error.Error) {
 	if e != nil {
 		return nil, error.ServerError("token could not be created")
 	}
-	return &middleware.AuthToken{Token: signedToken}, nil
+	return &AuthToken{Token: signedToken}, nil
 }

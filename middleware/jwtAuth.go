@@ -16,11 +16,7 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-type AuthToken struct {
-	Token string `json:"token"`
-}
-
-func JWTProtected() func(*fiber.Ctx) error {
+func JWTProtector() func(*fiber.Ctx) error {
 	config := jwtMiddleware.Config{
 		SigningKey:     []byte(os.Getenv("SECRET_KEY")),
 		ErrorHandler:   jwtError,
