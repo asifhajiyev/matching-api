@@ -1,12 +1,12 @@
 package routers
 
 import (
+	err "github.com/asifhajiyev/matching-api/error"
 	"github.com/asifhajiyev/matching-api/handlers"
 	"github.com/asifhajiyev/matching-api/middleware"
 	"github.com/asifhajiyev/matching-api/model/response"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"net/http"
 )
 
 type HandlerList struct {
@@ -33,7 +33,7 @@ func handleNotFoundError(app *fiber.App) {
 		func(c *fiber.Ctx) error {
 			return c.Status(fiber.StatusNotFound).JSON(response.RestResponse{
 				Code:    fiber.StatusNotFound,
-				Message: http.StatusText(fiber.StatusNotFound),
+				Message: err.URLNotFound,
 				Data:    nil,
 			})
 		},

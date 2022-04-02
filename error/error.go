@@ -10,6 +10,8 @@ const InvalidCoordinates = "longitude and latitude should be in the right range 
 
 const UnprocessableCoordinates = "longitude and latitude should be number and not empty"
 
+const URLNotFound = "requested url does not exist"
+
 type Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -25,37 +27,30 @@ func (e Error) AsMessage() string {
 	return e.Message
 }
 
-func NotFoundError(msg string) *Error {
-	return &Error{
-		Code:    http.StatusNotFound,
-		Message: msg,
-	}
-}
-
-func ServerError(msg string) *Error {
+func ServerError(m string) *Error {
 	return &Error{
 		Code:    http.StatusInternalServerError,
-		Message: msg,
+		Message: m,
 	}
 }
 
-func UnAuthorizedError(msg string) *Error {
+func UnAuthorizedError(m string) *Error {
 	return &Error{
 		Code:    http.StatusUnauthorized,
-		Message: msg,
+		Message: m,
 	}
 }
 
-func ValidationError(msg string) *Error {
+func ValidationError(m string) *Error {
 	return &Error{
 		Code:    http.StatusBadRequest,
-		Message: msg,
+		Message: m,
 	}
 }
 
-func ParsingError(msg string) *Error {
+func ParsingError(m string) *Error {
 	return &Error{
 		Code:    http.StatusUnprocessableEntity,
-		Message: strings.TrimSpace(msg),
+		Message: strings.TrimSpace(m),
 	}
 }
