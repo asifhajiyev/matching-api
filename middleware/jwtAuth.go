@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"github.com/asifhajiyev/matching-api/constants"
+	"github.com/asifhajiyev/matching-api/logger"
 	"github.com/asifhajiyev/matching-api/model"
 	"github.com/gofiber/fiber/v2"
 	jwtMiddleware "github.com/gofiber/jwt/v3"
@@ -29,6 +30,7 @@ func JWTProtector() func(*fiber.Ctx) error {
 
 func jwtError(c *fiber.Ctx, err error) error {
 	if err.Error() == constants.ErrorMalformedMissingToken {
+		logger.Error("jwtError.error", err)
 		return c.Status(fiber.StatusBadRequest).JSON(
 			model.BuildRestResponse(http.StatusBadRequest, http.StatusText(http.StatusBadRequest),
 				nil, err.Error()))
@@ -60,9 +62,11 @@ func extractToken(c *fiber.Ctx) (string, error) {
 }
 
 func verifyToken(c *fiber.Ctx) error {
+	logger.Info("verifyToken.begin")
 	tokenString, err := extractToken(c)
 
 	if err != nil {
+		logger.Error("verifyToken.error", err)
 		return err
 	}
 
@@ -75,12 +79,15 @@ func verifyToken(c *fiber.Ctx) error {
 		},
 	)
 	if err != nil {
+		logger.Error("verifyToken.error", err)
 		return err
 	}
 
 	claims := token.Claims.(*CustomClaims)
 	if !claims.Authenticated {
+		logger.Error("verifyToken.error", constants.ErrorInvalidToken)
 		return errors.New(constants.ErrorInvalidToken)
 	}
+	logger.Info("verifyToken.end")
 	return nil
 }

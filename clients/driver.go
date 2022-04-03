@@ -3,6 +3,7 @@ package clients
 import (
 	"github.com/asifhajiyev/matching-api/constants"
 	err "github.com/asifhajiyev/matching-api/error"
+	"github.com/asifhajiyev/matching-api/logger"
 	"github.com/asifhajiyev/matching-api/model"
 	"github.com/asifhajiyev/matching-api/model/request"
 	"github.com/asifhajiyev/matching-api/util"
@@ -22,6 +23,7 @@ func NewDriverClient(client *resty.Client) DriverSearcher {
 }
 
 func (ds driverSearch) SearchDriver(sd request.SearchDriverRequest) (*model.RestResponse, *err.Error) {
+	logger.Info("SearchDriver.begin")
 	rr := model.RestResponse{}
 	resp, e := ds.Client.R().SetBody(sd).Post("drivers/search")
 
@@ -31,6 +33,6 @@ func (ds driverSearch) SearchDriver(sd request.SearchDriverRequest) (*model.Rest
 	if e := util.JsonToStruct(resp.Body(), &rr); e != nil {
 		return nil, e
 	}
-
+	logger.Info("SearchDriver.end", &rr)
 	return &rr, nil
 }

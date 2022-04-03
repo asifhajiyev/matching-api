@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/asifhajiyev/matching-api/constants"
 	"github.com/asifhajiyev/matching-api/error"
+	"github.com/asifhajiyev/matching-api/logger"
 	"github.com/asifhajiyev/matching-api/middleware"
 	"github.com/asifhajiyev/matching-api/util"
 	"github.com/golang-jwt/jwt/v4"
@@ -22,6 +23,7 @@ type AuthToken struct {
 }
 
 func (jas JwtAuthService) GetToken() (*AuthToken, *error.Error) {
+	logger.Info("GetToken.begin")
 	secretKey := os.Getenv("SECRET_KEY")
 	expireTime, err := util.StringToInt(os.Getenv("JWT_EXPIRE_TIME"))
 
@@ -42,5 +44,6 @@ func (jas JwtAuthService) GetToken() (*AuthToken, *error.Error) {
 	if e != nil {
 		return nil, error.ServerError(constants.ErrorTokenCreation)
 	}
+	logger.Info("GetToken.end")
 	return &AuthToken{Token: signedToken}, nil
 }

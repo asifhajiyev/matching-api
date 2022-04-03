@@ -4,6 +4,7 @@ import (
 	"github.com/asifhajiyev/matching-api/clients"
 	"github.com/asifhajiyev/matching-api/constants"
 	"github.com/asifhajiyev/matching-api/error"
+	"github.com/asifhajiyev/matching-api/logger"
 	"github.com/asifhajiyev/matching-api/model/request"
 	"github.com/asifhajiyev/matching-api/model/response"
 	"github.com/asifhajiyev/matching-api/util"
@@ -22,7 +23,7 @@ func NewMatchingService(client clients.DriverSearcher) MatchingService {
 }
 
 func (ms matchingService) Match(longitude, latitude string) (*response.SearchDriverResponse, *error.Error) {
-
+	logger.Info("Match.begin")
 	if longitude == "" || latitude == "" {
 		return nil, error.ValidationError(constants.ErrorUnprocessableCoordinates)
 	}
@@ -52,5 +53,6 @@ func (ms matchingService) Match(longitude, latitude string) (*response.SearchDri
 	}
 
 	searchDriverResponse := response.SearchDriverResponse{RideInfo: rideInfo}
+	logger.Info("Match.end", searchDriverResponse)
 	return &searchDriverResponse, nil
 }
