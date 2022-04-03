@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/asifhajiyev/matching-api/constants"
 	"github.com/asifhajiyev/matching-api/error"
 	"github.com/asifhajiyev/matching-api/middleware"
 	"github.com/asifhajiyev/matching-api/util"
@@ -36,10 +37,10 @@ func (jas JwtAuthService) GetToken() (*AuthToken, *error.Error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
 	signedToken, e := token.SignedString([]byte(secretKey))
+
 	if e != nil {
-		return nil, error.ServerError("token could not be created")
+		return nil, error.ServerError(constants.ErrorTokenCreation)
 	}
 	return &AuthToken{Token: signedToken}, nil
 }

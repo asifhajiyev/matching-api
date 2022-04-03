@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/asifhajiyev/matching-api/clients"
+	"github.com/asifhajiyev/matching-api/constants"
 	"github.com/asifhajiyev/matching-api/error"
 	"github.com/asifhajiyev/matching-api/model/request"
 	"github.com/asifhajiyev/matching-api/model/response"
@@ -21,27 +22,35 @@ func NewMatchingService(client clients.DriverSearcher) MatchingService {
 }
 
 func (ms matchingService) Match(longitude, latitude string) (*response.SearchDriverResponse, *error.Error) {
-	radius := radiusToSearchDriver
+
+	if longitude == "" || latitude == "" {
+		return nil, error.ValidationError(constants.ErrorUnprocessableCoordinates)
+	}
+
+	radius := constants.RadiusToSearchDriver
 	searchDriver, err := request.NewSearchDriverRequest(longitude, latitude, radius)
 	if err != nil {
 		return nil, err
 	}
-	r, err := ms.Client.Search(*searchDriver)
 
+	driverResponse, err := ms.Client.SearchDriver(*searchDriver)
 	if err != nil {
 		return nil, err
 	}
 
-	if r.Data == nil {
+	if driverResponse.Data == nil {
 		return nil, &error.Error{
-			Code:    r.Code,
-			Message: r.Message,
+			Code:    driverResponse.Code,
+			Message: driverResponse.Message,
+			Details: driverResponse.ErrorDetails,
 		}
 	}
 
-	ri := response.RideInfo{}
-	util.InterfaceToStruct(r.Data, &ri)
-	dlr := response.SearchDriverResponse{RideInfo: ri}
+	rideInfo := response.RideInfo{}
+	if err = util.InterfaceToStruct(driverResponse.Data, &rideInfo); err != nil {
+		return nil, err
+	}
 
-	return &dlr, nil
+	searchDriverResponse := response.SearchDriverResponse{RideInfo: rideInfo}
+	return &searchDriverResponse, nil
 }

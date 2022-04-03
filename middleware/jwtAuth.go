@@ -2,7 +2,8 @@ package middleware
 
 import (
 	"errors"
-	"github.com/asifhajiyev/matching-api/model/response"
+	"github.com/asifhajiyev/matching-api/constants"
+	"github.com/asifhajiyev/matching-api/model"
 	"github.com/gofiber/fiber/v2"
 	jwtMiddleware "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
@@ -27,18 +28,14 @@ func JWTProtector() func(*fiber.Ctx) error {
 }
 
 func jwtError(c *fiber.Ctx, err error) error {
-	if err.Error() == "Missing or malformed JWT" {
-		return c.Status(fiber.StatusBadRequest).JSON(response.RestResponse{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-			Data:    nil,
-		})
+	if err.Error() == constants.ErrorMalformedMissingToken {
+		return c.Status(fiber.StatusBadRequest).JSON(
+			model.BuildRestResponse(http.StatusBadRequest, http.StatusText(http.StatusBadRequest),
+				nil, err.Error()))
 	}
-	return c.Status(fiber.StatusUnauthorized).JSON(response.RestResponse{
-		Code:    http.StatusUnauthorized,
-		Message: err.Error(),
-		Data:    nil,
-	})
+	return c.Status(fiber.StatusUnauthorized).JSON(
+		model.BuildRestResponse(http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized),
+			nil, err.Error()))
 }
 
 func jwtSuccess(c *fiber.Ctx) error {
@@ -52,12 +49,12 @@ func jwtSuccess(c *fiber.Ctx) error {
 func extractToken(c *fiber.Ctx) (string, error) {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
-		return "", errors.New("authorization header is required")
+		return "", errors.New(constants.ErrorAuthHeaderRequired)
 	}
 
 	bearerToken := strings.Split(authHeader, " ")
 	if len(bearerToken) != 2 || bearerToken[0] != "Bearer" {
-		return "", errors.New("wrong authorization header")
+		return "", errors.New(constants.ErrorWrongAuthHeader)
 	}
 	return bearerToken[1], nil
 }
@@ -72,7 +69,7 @@ func verifyToken(c *fiber.Ctx) error {
 	token, err := jwt.ParseWithClaims(
 		tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, errors.New("unexpected signing method")
+				return nil, errors.New(constants.ErrorWrongSigningMethod)
 			}
 			return []byte(os.Getenv("SECRET_KEY")), nil
 		},
@@ -83,7 +80,7 @@ func verifyToken(c *fiber.Ctx) error {
 
 	claims := token.Claims.(*CustomClaims)
 	if !claims.Authenticated {
-		return errors.New("invalid token")
+		return errors.New(constants.ErrorInvalidToken)
 	}
 	return nil
 }

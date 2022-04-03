@@ -1,6 +1,7 @@
 package request
 
 import (
+	"github.com/asifhajiyev/matching-api/constants"
 	error "github.com/asifhajiyev/matching-api/error"
 	"github.com/asifhajiyev/matching-api/util"
 )
@@ -20,11 +21,11 @@ func NewSearchDriverRequest(longitude, latitude string, radius int) (*SearchDriv
 	lt, ltErr := util.StringToFloat(latitude)
 
 	if lngErr != nil || ltErr != nil {
-		return nil, error.ParsingError(error.UnprocessableCoordinates)
+		return nil, error.ValidationError(constants.ErrorUnprocessableCoordinates)
 	}
 
 	if !isValidLongitude(lng) && !isValidLatitude(lt) {
-		return nil, error.ValidationError(error.InvalidCoordinates)
+		return nil, error.ValidationError(constants.ErrorInvalidCoordinates)
 	}
 
 	return &SearchDriverRequest{

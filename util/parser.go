@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
 	err "github.com/asifhajiyev/matching-api/error"
 	"strconv"
 	"strings"
@@ -21,7 +22,8 @@ func StringToFloat(s string) (float64, *err.Error) {
 func StringToInt(s string) (int, *err.Error) {
 	i, e := strconv.Atoi(s)
 	if e != nil {
-		return 0, err.ParsingError("argument could not be parsed to int number")
+		message := fmt.Sprintf("%s could not be parsed to int number", s)
+		return 0, err.ParsingError(message)
 	}
 	return i, nil
 }

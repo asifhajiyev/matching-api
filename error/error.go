@@ -2,35 +2,24 @@ package error
 
 import (
 	"net/http"
-	"strings"
 )
 
-const InvalidCoordinates = "longitude and latitude should be in the right range " +
-	"(-180<=longitude<=180 and -90<=latitude<=90)"
-
-const UnprocessableCoordinates = "longitude and latitude should be number and not empty"
-
-const URLNotFound = "requested url does not exist"
-
 type Error struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Details interface{} `json:"details"`
 }
 
-func (e Error) AsResponse() *Error {
-	return &Error{
-		Message: e.Message,
-	}
+type FieldValidationError struct {
+	FailedField string `json:"failedField"`
+	Tag         string `json:"tag"`
 }
 
-func (e Error) AsMessage() string {
-	return e.Message
-}
-
-func ServerError(m string) *Error {
+func ServerError(details interface{}) *Error {
 	return &Error{
 		Code:    http.StatusInternalServerError,
-		Message: m,
+		Message: http.StatusText(http.StatusInternalServerError),
+		Details: details,
 	}
 }
 
@@ -41,16 +30,18 @@ func UnAuthorizedError(m string) *Error {
 	}
 }
 
-func ValidationError(m string) *Error {
+func ParsingError(details interface{}) *Error {
 	return &Error{
-		Code:    http.StatusBadRequest,
-		Message: m,
+		Code:    http.StatusInternalServerError,
+		Message: http.StatusText(http.StatusInternalServerError),
+		Details: details,
 	}
 }
 
-func ParsingError(m string) *Error {
+func ValidationError(details interface{}) *Error {
 	return &Error{
-		Code:    http.StatusUnprocessableEntity,
-		Message: strings.TrimSpace(m),
+		Code:    http.StatusBadRequest,
+		Message: http.StatusText(http.StatusBadRequest),
+		Details: details,
 	}
 }
