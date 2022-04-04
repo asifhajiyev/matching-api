@@ -1,6 +1,7 @@
 package routers
 
 import (
+	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/asifhajiyev/matching-api/constants"
 	"github.com/asifhajiyev/matching-api/handlers"
 	"github.com/asifhajiyev/matching-api/middleware"
@@ -17,6 +18,7 @@ type HandlerList struct {
 
 func (h *HandlerList) SetupRoutes(app *fiber.App) {
 	app.Use(logger.New())
+	useSwagger(app)
 
 	appBaseGroup := app.Group("api")
 
@@ -37,4 +39,9 @@ func handleNotFoundError(app *fiber.App) {
 					nil, constants.ErrorURLNotFound))
 		},
 	)
+}
+
+func useSwagger(app *fiber.App) {
+	route := app.Group("/swagger")
+	route.Get("*", swagger.HandlerDefault)
 }

@@ -1,0 +1,65 @@
+basePath: /api/
+definitions:
+  model.RestResponse:
+    properties:
+      code:
+        type: integer
+      data: {}
+      errorDetails: {}
+      message:
+        type: string
+    type: object
+info:
+  contact:
+    email: asif.hajiyev@outlook.com
+  description: This is a Driver Location API to save them and search
+  title: Driver Location API
+  version: "1.0"
+paths:
+  /auth/get-token:
+    get:
+      description: Generating Bearer token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RestResponse'
+      summary: Get Token to call match/* endpoints
+      tags:
+      - Auth
+  /match:
+    get:
+      consumes:
+      - application/json
+      description: Matches given rider with the nearest driver by calculating distance
+      parameters:
+      - description: longitude of rider
+        in: query
+        name: longitude
+        required: true
+        type: string
+      - description: latitude of rider
+        in: query
+        name: latitude
+        required: true
+        type: string
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RestResponse'
+      security:
+      - bearerAuth: []
+      summary: Match Rider with the nearest driver
+      tags:
+      - Match
+swagger: "2.0"

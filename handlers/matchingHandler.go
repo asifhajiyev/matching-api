@@ -20,6 +20,21 @@ func NewMatchingHandler(ms services.MatchingService) MatchingHandler {
 	return matchingHandler{service: ms}
 }
 
+// Match godoc
+// @Summary			Match Rider with the nearest driver
+// @Tags 			Match
+// @Description 	Matches given rider with the nearest driver by calculating distance
+// @Accept      	json
+// @Produce     	json
+// @Param       	longitude 	query string true "longitude of rider"
+// @Param       	latitude  	query string true "latitude of rider"
+// @Success     	200  {object}  model.RestResponse
+// @securityDefinitions.bearerAuth
+// @Security 		bearerAuth
+// @In 				header
+// @Name 			Bearer
+// @Param 			Authorization header string true "Bearer"
+// @Router      	/match [get]
 func (mh matchingHandler) Match(c *fiber.Ctx) error {
 	logger.Info("Match.begin")
 	longitude := c.Query("longitude")

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/asifhajiyev/matching-api/clients"
+	_ "github.com/asifhajiyev/matching-api/docs"
 	"github.com/asifhajiyev/matching-api/handlers"
 	"github.com/asifhajiyev/matching-api/routers"
 	"github.com/asifhajiyev/matching-api/services"
@@ -9,6 +10,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"log"
 )
+
+// @title           Driver Location API
+// @version         1.0
+// @description     This is a Driver Location API to save them and search
+
+// @contact.email  	asif.hajiyev@outlook.com
+// @BasePath  /api/
 
 func main() {
 

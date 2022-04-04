@@ -20,6 +20,13 @@ func NewAuthHandler(as services.AuthService) AuthHandler {
 	return authHandler{authService: as}
 }
 
+// GetToken godoc
+// @Summary			Get Token to call match/* endpoints
+// @Tags 			Auth
+// @Description 	Generating Bearer token
+// @Produce     	json
+// @Success     	200  {object}  model.RestResponse
+// @Router      	/auth/get-token [get]
 func (ah authHandler) GetToken(c *fiber.Ctx) error {
 	logger.Info("GetToken.begin")
 	r, err := ah.authService.GetToken()
