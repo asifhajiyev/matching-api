@@ -59,6 +59,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "longitude of rider",
                         "name": "longitude",
                         "in": "query",
@@ -69,13 +76,6 @@ const docTemplate = `{
                         "description": "latitude of rider",
                         "name": "latitude",
                         "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer",
-                        "name": "Authorization",
-                        "in": "header",
                         "required": true
                     }
                 ],

@@ -35,6 +35,11 @@ paths:
       - application/json
       description: Matches given rider with the nearest driver by calculating distance
       parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: longitude of rider
         in: query
         name: longitude
@@ -43,11 +48,6 @@ paths:
       - description: latitude of rider
         in: query
         name: latitude
-        required: true
-        type: string
-      - description: Bearer
-        in: header
-        name: Authorization
         required: true
         type: string
       produces:
