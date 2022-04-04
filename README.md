@@ -1,5 +1,5 @@
 Matching API\
-It is used to match rider with the driver. There two endpoints
+It is used to match rider with the driver. There are two endpoints
 * GET: http://127.0.0.1:8090/api/auth/get-token
 This endpoint is for getting token. Response example is given below. After getting token other endpoints could be used. To use them put the token in Authorization header with Bearer key.
 ```json
