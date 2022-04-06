@@ -8,6 +8,7 @@ import (
 	"github.com/asifhajiyev/matching-api/model/request"
 	"github.com/asifhajiyev/matching-api/util"
 	"github.com/go-resty/resty/v2"
+	"os"
 )
 
 type DriverSearcher interface {
@@ -25,7 +26,9 @@ func NewDriverClient(client *resty.Client) DriverSearcher {
 func (ds driverSearch) SearchDriver(sd request.SearchDriverRequest) (*model.RestResponse, *err.Error) {
 	logger.Info("SearchDriver.begin")
 	rr := model.RestResponse{}
-	resp, e := ds.Client.R().SetBody(sd).Post("drivers/search")
+	dlAUsername := os.Getenv("client_driver_location_api_username")
+	dlAPassword := os.Getenv("client_driver_location_api_password")
+	resp, e := ds.Client.R().SetBody(sd).SetBasicAuth(dlAUsername, dlAPassword).Post("drivers/search")
 
 	if e != nil {
 		return nil, err.ServerError(constants.ErrorDriverApiDoesNotRespond)
