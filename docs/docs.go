@@ -4,108 +4,72 @@ package docs
 
 import "github.com/swaggo/swag"
 
-const docTemplate = `{
-    "schemes": {{ marshal .Schemes }},
-    "swagger": "2.0",
-    "info": {
-        "description": "{{escape .Description}}",
-        "title": "{{.Title}}",
-        "contact": {
-            "email": "asif.hajiyev@outlook.com"
-        },
-        "version": "{{.Version}}"
-    },
-    "host": "{{.Host}}",
-    "basePath": "{{.BasePath}}",
-    "paths": {
-        "/auth/get-token": {
-            "get": {
-                "description": "Generating Bearer token",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Get Token to call match/* endpoints",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.RestResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/match": {
-            "get": {
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "description": "Matches given rider with the nearest driver by calculating distance",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Match"
-                ],
-                "summary": "Match Rider with the nearest driver",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "longitude of rider",
-                        "name": "longitude",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "latitude of rider",
-                        "name": "latitude",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.RestResponse"
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "model.RestResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {},
-                "errorDetails": {},
-                "message": {
-                    "type": "string"
-                }
-            }
-        }
-    }
-}`
+const docTemplate = `basePath: /api/
+securityDefinitions:
+  bearerAuth:
+    name: Authorization
+    in: header
+    type: apiKey
+definitions:
+  model.RestResponse:
+    properties:
+      code:
+        type: integer
+      data: {}
+      errorDetails: {}
+      message:
+        type: string
+    type: object
+info:
+  contact:
+    email: asif.hajiyev@outlook.com
+  description: This is a Driver Location API to save them and search
+  title: Driver Location API
+  version: "1.0"
+paths:
+  /auth/get-token:
+    get:
+      description: Generating Bearer token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RestResponse'
+      summary: Get Token to call match/* endpoints
+      tags:
+      - Auth
+  /match:
+    get:
+      consumes:
+      - application/json
+      description: Matches given rider with the nearest driver by calculating distance
+      parameters:
+      - description: longitude of rider
+        in: query
+        name: longitude
+        required: true
+        type: string
+      - description: latitude of rider
+        in: query
+        name: latitude
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RestResponse'
+      summary: Match Rider with the nearest driver
+      tags:
+      - Match
+      security:
+      - bearerAuth: []
+swagger: "2.0"
+`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{

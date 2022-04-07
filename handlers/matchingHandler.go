@@ -27,11 +27,6 @@ func NewMatchingHandler(ms services.MatchingService) MatchingHandler {
 // @Accept      	json
 // @Produce     	json
 // @Success     	200  {object}  model.RestResponse
-// @securityDefinitions.bearerAuth
-// @Security 		bearerAuth
-// @In 				header
-// @Name 			Bearer
-// @Param 			Authorization header string true "Bearer"
 // @Param       	longitude 	query string true "longitude of rider"
 // @Param       	latitude  	query string true "latitude of rider"
 // @Router      	/match [get]
